@@ -24,3 +24,8 @@ export async function getChildIdentity(): Promise<{ id: string | null; name: str
   return { id, name };
 }
 
+export async function clearIdentity() {
+  await SecureStore.deleteItemAsync(KEY_CHILD_ID);
+  await SecureStore.deleteItemAsync(KEY_CHILD_NAME);
+  await SecureStore.deleteItemAsync(KEY_ROLE);
+}

@@ -13,12 +13,14 @@ import { formatLastSeen, isOnline } from "../../utils/time";
 
 export default function ParentDashboard() {
 	const router = useRouter();
-	const { childData, subscribeLocation, refreshChildData } = useStore();
+	const { childData, subscribeLocation, subscribeDevice, refreshChildData } =
+		useStore();
 	const [refreshing, setRefreshing] = useState(false);
 
 	useEffect(() => {
 		if (childData?.id) {
 			subscribeLocation(childData.id);
+			subscribeDevice(childData.id);
 		}
 	}, [childData?.id]);
 

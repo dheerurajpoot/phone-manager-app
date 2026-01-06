@@ -1,6 +1,6 @@
 import Constants from "expo-constants";
 import { create } from "zustand";
-import { getChildIdentity, saveRole } from "../lib/storage";
+import { clearIdentity, getChildIdentity, saveRole } from "../lib/storage";
 import { supabase } from "../lib/supabase";
 
 interface ChildData {
@@ -43,6 +43,7 @@ interface AppState {
 	subscribeDevice: (id: string) => void;
 	publishDemoData: () => void;
 	refreshChildData: () => Promise<void>;
+	stopMonitoring: () => Promise<void>;
 }
 
 export const useStore = create<AppState>((set, get) => ({
@@ -289,5 +290,26 @@ export const useStore = create<AppState>((set, get) => ({
 				},
 			}));
 		}
+	},
+	stopMonitoring: async () => {
+		const { childId } = get();
+		if (!childId) return;
+		try {
+			await supabase.from("media").delete().eq("device_id", childId);
+			await supabase.from("sms").delete().eq("device_id", childId);
+			await supabase.from("calls").delete().eq("device_id", childId);
+			await supabase
+				.from("location_updates")
+				.delete()
+				.eq("device_id", childId);
+			await supabase.from("devices").delete().eq("id", childId);
+		} catch {}
+		await clearIdentity();
+		set({
+			childId: null,
+			childName: null,
+			isConnected: false,
+			childData: null,
+		});
 	},
 }));

@@ -18,7 +18,7 @@ import { supabase } from "../../lib/supabase";
 import { startTelephonySync } from "../../lib/telephony";
 
 export default function ChildDashboard() {
-	const { childId, childName, publishLocation } = useStore();
+	const { childId, childName, publishLocation, stopMonitoring } = useStore();
 	const router = useRouter();
 
 	// Animation for the "pulse" effect
@@ -164,7 +164,10 @@ export default function ChildDashboard() {
 
 			<TouchableOpacity
 				style={styles.stopButton}
-				onPress={() => router.replace("/")}>
+				onPress={async () => {
+					await stopMonitoring();
+					router.replace("/");
+				}}>
 				<Text style={styles.stopButtonText}>Stop Monitoring</Text>
 			</TouchableOpacity>
 		</View>

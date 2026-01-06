@@ -12,11 +12,10 @@ export function formatLastSeen(iso?: string): string {
   return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
 }
 
-export function isOnline(iso?: string, thresholdSeconds = 20): boolean {
+export function isOnline(iso?: string, thresholdSeconds = 60): boolean {
   if (!iso) return false;
   const date = new Date(iso);
   const now = new Date();
   const diffSec = Math.floor((now.getTime() - date.getTime()) / 1000);
   return diffSec <= thresholdSeconds;
 }
-
